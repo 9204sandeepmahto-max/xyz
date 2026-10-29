@@ -1,0 +1,523 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JEE</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --text: #18181b;
+  --muted: #71717a;
+  --line: #e9e9ed;
+  --soft: #f7f7fa;
+  --purple: #6757e8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.navbar {
+  height: 76px;
+  padding: 0 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 850;
+}
+
+.brand small {
+  display: block;
+  margin-top: 3px;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.brand-icon, .dialog-logo {
+  display: grid;
+  place-items: center;
+  background: var(--text);
+  color: white;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.brand-icon {
+  width: 37px;
+  height: 37px;
+}
+
+.navbar nav {
+  display: flex;
+  gap: 28px;
+}
+
+.navbar nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.profile {
+  width: 37px;
+  height: 37px;
+  border: 0;
+  border-radius: 50%;
+  background: #eeeaff;
+  color: var(--purple);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.hero {
+  padding: 95px 24px 90px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 0%, #f0edff 0%, transparent 62%);
+}
+
+.eyebrow {
+  color: var(--purple);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.hero h1 {
+  margin: 22px 0 14px;
+  font-size: clamp(42px, 6vw, 67px);
+  line-height: 1.08;
+  letter-spacing: -3px;
+}
+
+.hero h1 span {
+  color: var(--purple);
+}
+
+.hero p, .resources > p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.primary-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  margin-top: 23px;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 10px;
+  background: #201d30;
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.section, .resources {
+  max-width: 1080px;
+  margin: auto;
+  padding: 60px 24px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+h2 {
+  margin: 9px 0 0;
+  font-size: 28px;
+  letter-spacing: -1px;
+}
+
+.count {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.subject-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.subject-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px #0000000b;
+}
+
+.subject-symbol {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  font-size: 24px;
+}
+
+.purple { background: #efecff; color: #6757e8; }
+.orange { background: #fff0e5; color: #c76b23; }
+.green { background: #e6f7ed; color: #278b56; }
+
+.tag {
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+}
+
+.subject-card h3 {
+  margin: 12px 0 8px;
+  font-size: 19px;
+}
+
+.subject-card p, .resource-row p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.subject-card a {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--purple);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.resources {
+  border-top: 1px solid var(--line);
+}
+
+.resource-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 19px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.resource-icon {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 11px;
+  background: var(--soft);
+  font-size: 20px;
+}
+
+.resource-row strong {
+  font-size: 13px;
+}
+
+.resource-row p {
+  margin: 5px 0 0;
+}
+
+.resource-arrow {
+  margin-left: auto;
+  color: var(--muted);
+}
+
+footer {
+  padding: 25px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  border-top: 1px solid var(--line);
+}
+
+dialog {
+  width: calc(100% - 32px);
+  max-width: 360px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  color: var(--text);
+  background: var(--bg);
+}
+
+dialog::backdrop {
+  background: #11111b88;
+  backdrop-filter: blur(4px);
+}
+
+dialog form {
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.dialog-logo {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 20px;
+}
+
+dialog h2 {
+  font-size: 23px;
+}
+
+dialog p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+dialog label {
+  display: block;
+  margin-top: 20px;
+  font-size: 12px;
+}
+
+dialog input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--soft);
+  color: var(--text);
+}
+
+.dialog-submit {
+  width: 100%;
+}
+
+#secretMessage {
+  color: #c24141;
+}
+
+@media (max-width: 650px) {
+  .navbar {
+    padding: 0 18px;
+  }
+
+  .navbar nav {
+    gap: 12px;
+  }
+
+  .navbar nav a {
+    font-size: 11px;
+  }
+
+  .hero {
+    padding: 75px 20px;
+  }
+
+  .hero h1 {
+    letter-spacing: -1.5px;
+  }
+
+  .subject-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border: 1px solid #e9e9ed;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #18181b;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.back-button:hover {
+  background: #f4f4f7;
+}
+</style>
+</head>
+<body>
+
+  <header class="navbar">
+    <a class="brand" href="study.html">
+      <span class="brand-icon">J</span>
+      <span>JEE<small>LEARNING</small></span>
+    </a>
+
+    <nav>
+      <a href="#subjects">Subjects</a>
+      <a href="#resources">Resources</a>
+    </nav>
+
+ <a href="index.html" class="back-button">← Back</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="eyebrow">YOUR LEARNING SPACE</span>
+      <h1>Learn smarter.<br><span>Go further.</span></h1>
+      <p>Explore your study resources, organised in one place.</p>
+
+      <a class="primary-btn" href="#subjects">
+        Explore materials <span>→</span>
+      </a>
+    </section>
+
+    <section class="section" id="subjects">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOUR LIBRARY</span>
+          <h2>Study by subject</h2>
+        </div>
+        <span class="count">03 SUBJECTS</span>
+      </div>
+
+      <div class="subject-grid">
+        <article class="subject-card">
+          <div class="subject-symbol purple">∑</div>
+          <span class="tag">MATHEMATICS</span>
+          <h3>Mathematics</h3>
+          <p>Concepts, formulas and practice notes.</p>
+          <a href="https://www.esaral.com/media/uploads/2024/4/5/1266-JEE-Main-Maths-Revision-Notes-on-Complex-Numbers-and-Quadratic-Equations.pdf">View chapters ↗</a>
+        </article>
+
+        <article class="subject-card">
+          <div class="subject-symbol orange">⚛</div>
+          <span class="tag">PHYSICS</span>
+          <h3>Physics</h3>
+          <p>Understand concepts step by step.</p>
+          <a href="https://www.esaral.com/media/uploads/2024/4/2/121122-JEE-Main-2024-Physics-and-Measurement-Revision-Notes-Free-PDF-Download.pdf">View chapters ↗</a>
+        </article>
+
+        <article class="subject-card">
+          <div class="subject-symbol green">⌬</div>
+          <span class="tag">CHEMISTRY</span>
+          <h3>Chemistry</h3>
+          <p>Revision notes and key topics.</p>
+          <a href="https://www.esaral.com/media/uploads/2024/4/2/131931-Atomic-structure-Revisios-Notes-for-JEE-Main.pdf">View chapters ↗</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="resources" id="resources">
+      <span class="eyebrow">QUICK ACCESS</span>
+      <h2>Continue learning</h2>
+      <p>Organise your notes and revision resources here.</p>
+
+      <div class="resource-row">
+        <span class="resource-icon">▤</span>
+        <div>
+          <strong>Class Notes</strong>
+          <p>Topic-wise notes and summaries</p>
+        </div>
+        <span class="resource-arrow">→</span>
+      </div>
+
+      <div class="resource-row">
+        <span class="resource-icon">✓</span>
+        <div>
+          <strong>Practice Questions</strong>
+          <p>Questions for regular practice</p>
+        </div>
+        <span class="resource-arrow">→</span>
+      </div>
+    </section>
+
+    <footer>JEE Learning Space · Keep learning every day.</footer>
+  </main>
+
+  <dialog id="accessDialog">
+    <form id="secretForm">
+      <button type="button" id="closeDialog"
+        class="close-btn" aria-label="Close">×</button>
+
+      <div class="dialog-logo">JEE</div>
+      <h2>Private access</h2>
+      <p>Enter your secondary access password.</p>
+
+      <label for="secretPassword">Password</label>
+      <input id="secretPassword" type="password"
+        placeholder="Enter password" required>
+
+      <button class="primary-btn dialog-submit" type="submit">
+        Continue →
+      </button>
+
+      <p id="secretMessage" role="status"></p>
+    </form>
+  </dialog>
+
+  <script>
+    const dialog = document.getElementById("accessDialog");
+
+    document.getElementById("accessButton").onclick = () => {
+      dialog.showModal();
+    };
+
+    document.getElementById("closeDialog").onclick = () => {
+      dialog.close();
+    };
+
+    document.getElementById("secretForm")
+      .addEventListener("submit", (event) => {
+        event.preventDefault();
+        document.getElementById("secretMessage").textContent =
+          "Secure verification will be connected in the next step.";
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Chat — Conversation</title>
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:light;--bg:#f5f7fb;--panel:#fff;--text:#171717;--muted:#737373;--border:#e5e7eb;--primary:#2563eb;--mine:#2563eb;--theirs:#fff;--input:#f9fafb}
+body.dark{color-scheme:dark;--bg:#111318;--panel:#191c23;--text:#f5f5f5;--muted:#a1a1aa;--border:#30343d;--primary:#648cff;--mine:#355bc5;--theirs:#252a34;--input:#222630}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+header{height:70px;background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 18px;position:sticky;top:0;z-index:2}
+.back{background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:11px;padding:10px 13px}
+.person{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+.avatar{width:43px;height:43px;border-radius:50%;background:#e7edff;color:var(--primary);display:grid;place-items:center;font-weight:700;font-size:19px;flex-shrink:0}
+.person-name{font-weight:700;overflow-wrap:anywhere}
+.online-status{font-size:12px;color:var(--muted);margin-top:4px}
+.theme{background:var(--input);color:var(--text);border:1px solid var(--border);border-radius:11px;padding:10px}
+main{max-width:850px;margin:auto;height:calc(100dvh - 70px);display:flex;flex-direction:column;background:var(--panel);border-left:1px solid var(--border);border-right:1px solid var(--border)}
+#status{padding:9px 14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--border);min-height:34px}
+#messages{flex:1;overflow-y:auto;padding:20px 15px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.empty{text-align:center;color:var(--muted);padding:35px 12px;line-height:1.6}
+.message-row{display:flex;flex-direction:column;max-width:80%;align-self:flex-start;gap:4px}
+.message-row.mine{align-self:flex-end;align-items:flex-end}
+.bubble{padding:11px 14px;border-radius:17px;background:var(--theirs);border:1px solid var(--border);line-height:1.45;overflow-wrap:anywhere;white-space:pre-wrap}
+.mine .bubble{background:var(--mine);color:#fff;border-color:transparent;border-bottom-right-radius:5px}
+.message-row:not(.mine) .bubble{border-bottom-left-radius:5px}
+.message-meta{font-size:11px;color:var(--muted);padding:0 4px}
+.composer{display:flex;align-items:flex-end;gap:9px;padding:12px;border-top:1px solid var(--border);background:var(--panel)}
+#messageInput{flex:1;min-width:0;max-height:130px;resize:none;padding:13px 14px;border:1px solid var(--border);border-radius:18px;background:var(--input);color:var(--text);outline:none;line-height:1.4}
+#messageInput:focus{border-color:var(--primary)}
+#sendBtn{background:var(--primary);color:#fff;border:0;border-radius:15px;padding:13px 18px;font-weight:700;min-height:46px}
+#sendBtn:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:480px){header{padding:0 10px;gap:8px}.theme{padding:9px;font-size:13px}#messages{padding:15px 10px}.message-row{max-width:88%}.composer{padding:9px;gap:7px}#sendBtn{padding:12px 14px}}
+</style>
+</head>
+<body>
+<header>
+  <button class="back" id="backBtn" type="button">← Back</button>
+  <div class="person">
+    <div class="avatar" id="headerAvatar">?</div>
+    <div style="min-width:0">
+      <div class="person-name" id="headerName">Loading...</div>
+      <div class="online-status" id="headerStatus">Connecting...</div>
+    </div>
+  </div>
+  <button class="theme" id="themeBtn" type="button">🌙</button>
+</header>
+
+<main>
+  <div id="status" role="status" aria-live="polite">Connecting to chat...</div>
+  <section id="messages" aria-label="Messages">
+    <div class="empty">Loading messages...</div>
+  </section>
+  <form class="composer" id="composer">
+    <textarea id="messageInput" rows="1" maxlength="2000"
+      placeholder="Type a message..." aria-label="Message" required></textarea>
+    <button id="sendBtn" type="submit">Send ➤</button>
+  </form>
+</main>
+
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+import {
+  getDatabase, ref, get, push, set, onChildAdded, query, limitToLast
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDDxPkDQivEN8YtTgUbER8g3wdk7paAuEY",
+  authDomain: "jee1-3c96a.firebaseapp.com",
+  databaseURL: "https://jee1-3c96a-default-rtdb.firebaseio.com",
+  projectId: "jee1-3c96a",
+  storageBucket: "jee1-3c96a.firebasestorage.app",
+  messagingSenderId: "92796387355",
+  appId: "1:92796387355:web:fda978d6827ecfee7e78be",
+  measurementId: "G-MPZTE4Q2R1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const $ = id => document.getElementById(id);
+
+const params = new URLSearchParams(location.search);
+const otherUid = params.get("uid");
+const requestedUsername = (params.get("username") || "Friend").replace(/^@/, "");
+let me = null;
+let chatRef = null;
+let seenMessages = new Set();
+let stopMessages = null;
+let sending = false;
+
+$("headerName").textContent = "@" + requestedUsername;
+$("headerAvatar").textContent = requestedUsername.charAt(0).toUpperCase();
+
+$("backBtn").addEventListener("click", () => {
+  location.href = "chat.html";
+});
+
+$("themeBtn").addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  $("themeBtn").textContent =
+    document.body.classList.contains("dark") ? "☀️" : "🌙";
+});
+
+function status(message) {
+  $("status").textContent = message;
+}
+
+function showMessage(messageId, data) {
+  if (!data || typeof data.text !== "string" || seenMessages.has(messageId)) return;
+  seenMessages.add(messageId);
+
+  const mine = data.senderUid === me.uid;
+  const row = document.createElement("div");
+  row.className = "message-row" + (mine ? " mine" : "");
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = data.text;
+
+  const meta = document.createElement("div");
+  meta.className = "message-meta";
+  const time = Number(data.timestamp);
+  meta.textContent = Number.isFinite(time)
+    ? new Date(time).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"})
+    : "";
+  row.append(bubble, meta);
+  $("messages").appendChild(row);
+  $("messages").scrollTop = $("messages").scrollHeight;
+}
+
+function showEmptyIfNeeded() {
+  if ($("messages").children.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No messages yet. Say hello 👋";
+    $("messages").appendChild(empty);
+  }
+}
+
+function startChat() {
+  if (!me || !otherUid || otherUid === me.uid) {
+    status("Invalid conversation. Go back and select a friend.");
+    $("sendBtn").disabled = true;
+    return;
+  }
+
+  // Both participants use the same UID-sorted path.
+  const ids = [me.uid, otherUid].sort();
+  chatRef = ref(db, `conversations/${ids[0]}/${ids[1]}/messages`);
+
+  // Register a live listener. Existing messages are also delivered.
+  stopMessages = onChildAdded(
+    query(chatRef, limitToLast(300)),
+    snapshot => {
+      const data = snapshot.val();
+      const firstMessage = $("messages").querySelector(".empty");
+      if (firstMessage) firstMessage.remove();
+      showMessage(snapshot.key, data);
+      showEmptyIfNeeded();
+    },
+    error => {
+      console.error("Message listener error:", error);
+      status("Cannot load messages. Check your Firebase Rules.");
+    }
+  );
+
+  $("headerStatus").textContent = "Real-time chat";
+  status("Connected. Messages update automatically.");
+}
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    location.replace("index.html");
+    return;
+  }
+
+  me = user;
+
+  if (!otherUid || otherUid === me.uid) {
+    status("Invalid friend. Return to Your Friends and select someone.");
+    $("sendBtn").disabled = true;
+    return;
+  }
+
+  try {
+    // Confirm the destination UID exists in the username directory.
+    const directory = await get(ref(db, "usernames"));
+    const allUsernames = directory.val() || {};
+    const validTarget = Object.entries(allUsernames).some(
+      ([username, uid]) =>
+        uid === otherUid &&
+        username.toLowerCase() === requestedUsername.toLowerCase()
+    );
+
+    if (!validTarget) {
+      status("Friend profile could not be verified. Go back and search again.");
+      $("sendBtn").disabled = true;
+      return;
+    }
+
+    startChat();
+  } catch (error) {
+    console.error(error);
+    status("Could not verify friend. Check Firebase Rules.");
+    $("sendBtn").disabled = true;
+  }
+});
+
+$("messageInput").addEventListener("input", () => {
+  const input = $("messageInput");
+  input.style.height = "auto";
+  input.style.height = Math.min(input.scrollHeight, 130) + "px";
+});
+
+$("messageInput").addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    $("composer").requestSubmit();
+  }
+});
+
+$("composer").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!me || !chatRef || sending) return;
+
+  const input = $("messageInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  sending = true;
+  $("sendBtn").disabled = true;
+
+  try {
+    const messageRef = push(chatRef);
+    await set(messageRef, {
+      senderUid: me.uid,
+      text: text,
+      timestamp: Date.now()
+    });
+
+    input.value = "";
+    input.style.height = "auto";
+    input.focus();
+  } catch (error) {
+    console.error("Send error:", error);
+    status("Message not sent. Check Firebase Rules and internet connection.");
+  } finally {
+    sending = false;
+    $("sendBtn").disabled = false;
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,558 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jee</title>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #fff;
+      --card: #fff;
+      --text: #171717;
+      --muted: #777;
+      --border: #e7e7e7;
+      --field: #fafafa;
+      --button: #171717;
+      --button-text: #fff;
+      --accent: #635bff;
+      --shadow: 0 16px 55px rgba(0,0,0,.045);
+    }
+
+    * { box-sizing: border-box; }
+
+    body.dark {
+      color-scheme: dark;
+      --bg: #101114;
+      --card: #17181d;
+      --text: #f5f5f5;
+      --muted: #a0a0aa;
+      --border: #303139;
+      --field: #202127;
+      --button: #f5f5f5;
+      --button-text: #171717;
+      --accent: #a39dff;
+      --shadow: 0 16px 55px rgba(0,0,0,.2);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      transition: background .2s, color .2s;
+    }
+
+    .topbar {
+      height: 76px;
+      padding: 0 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .mini-logo {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 9px;
+      font-size: 17px;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 13px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .page {
+      min-height: calc(100vh - 76px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 390px;
+      padding: 38px 32px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .logo-box {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 28px;
+      display: grid;
+      place-items: center;
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 22px;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 3px;
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 27px;
+      letter-spacing: -.8px;
+    }
+
+    .subtitle {
+      margin: 11px 0 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      background: var(--field);
+      border-radius: 11px;
+      padding-right: 12px;
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,91,255,.12);
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      padding: 15px 13px;
+      background: transparent;
+      color: var(--text);
+      border: 0;
+      outline: 0;
+      font-size: 14px;
+    }
+
+    input::placeholder { color: var(--muted); }
+
+    .eye-btn {
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .unlock-btn {
+      width: 100%;
+      margin-top: 17px;
+      padding: 15px 17px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 0;
+      border-radius: 11px;
+      background: var(--button);
+      color: var(--button-text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+
+    .unlock-btn:hover { opacity: .85; }
+    .unlock-btn:disabled { opacity: .6; cursor: wait; }
+    .arrow { font-size: 20px; }
+
+    #message {
+      min-height: 18px;
+      margin: 12px 0 0;
+      font-size: 12px;
+      text-align: center;
+      color: #d94b4b;
+      overflow-wrap: anywhere;
+    }
+
+    .secure-note {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      margin-top: 19px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .shield { color: #22a06b; }
+
+    footer {
+      margin-top: 36px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .topbar { height: 65px; padding: 0 20px; }
+      .page {
+        min-height: calc(100vh - 65px);
+        padding: 25px 16px;
+      }
+      .login-card { padding: 32px 22px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand-mini">
+      <span class="mini-logo">J</span>
+      <span>JEE</span>
+    </div>
+
+    <button id="themeToggle" class="theme-toggle" type="button">
+      <span id="themeIcon">☾</span>
+      <span id="themeText">Dark</span>
+    </button>
+  </header>
+
+  <main class="page">
+    <section class="login-card">
+      <div class="logo-box">JEE</div>
+
+      <h1>Welcome back</h1>
+      <p class="subtitle">Enter your password to continue.</p>
+
+      <form id="unlockForm">
+        <label for="password">Access password</label>
+
+        <div class="input-wrap">
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            required
+          >
+
+          <button
+            type="button"
+            id="showPassword"
+            class="eye-btn"
+          >Show</button>
+        </div>
+
+        <button type="submit" class="unlock-btn" id="unlockButton">
+          <span>Unlock</span>
+          <span class="arrow">→</span>
+        </button>
+
+        <p id="message" role="status"></p>
+      </form>
+
+      <div class="secure-note">
+        <span class="shield">◆</span>
+        Private access
+      </div>
+    </section>
+
+    <footer>JEE · Your private space</footer>
+  </main>
+
+  <script type="module">
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+    import {
+      getDatabase,
+      ref,
+      get,
+      set,
+      runTransaction
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDxPkDQivEN8YtTgUbER8g3wdk7paAuEY",
+      authDomain: "jee1-3c96a.firebaseapp.com",
+      databaseURL: "https://jee1-3c96a-default-rtdb.firebaseio.com",
+      projectId: "jee1-3c96a",
+      storageBucket: "jee1-3c96a.firebasestorage.app",
+      messagingSenderId: "92796387355",
+      appId: "1:92796387355:web:fda978d6827ecfee7e78be",
+      measurementId: "G-MPZTE4Q2R1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const provider = new GoogleAuthProvider();
+
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    const themeText = document.getElementById("themeText");
+    const passwordInput = document.getElementById("password");
+    const showPassword = document.getElementById("showPassword");
+    const unlockForm = document.getElementById("unlockForm");
+    const unlockButton = document.getElementById("unlockButton");
+    const message = document.getElementById("message");
+
+    // Light/dark theme
+    themeToggle.addEventListener("click", () => {
+      const dark = document.body.classList.toggle("dark");
+      themeIcon.textContent = dark ? "☀" : "☾";
+      themeText.textContent = dark ? "Light" : "Dark";
+      themeToggle.setAttribute(
+        "aria-label",
+        dark ? "Switch to light mode" : "Switch to dark mode"
+      );
+    });
+
+    // Show/hide password
+    showPassword.addEventListener("click", () => {
+      const showing = passwordInput.type === "text";
+      passwordInput.type = showing ? "password" : "text";
+      showPassword.textContent = showing ? "Show" : "Hide";
+    });
+
+    // Wait for Firebase to restore the login session
+    function getCurrentUser() {
+      return new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(
+          auth,
+          user => {
+            unsubscribe();
+            resolve(user);
+          },
+          error => {
+            unsubscribe();
+            reject(error);
+          }
+        );
+      });
+    }
+
+    // Ask the user to choose a username
+    function askForUsername(suggested = "") {
+      const answer = prompt(
+        "Choose a UNIQUE username (3–20 letters, numbers or underscores):",
+        suggested
+      );
+
+      if (answer === null) return null;
+
+      const username = answer.trim();
+
+      if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) {
+        throw new Error(
+          "Username must be 3–20 characters using letters, numbers or underscores."
+        );
+      }
+
+      return username;
+    }
+
+    // Reserve a username without overwriting another user's claim
+    async function reserveUniqueUsername(username, uid) {
+      const usernameKey = username.toLowerCase();
+      const usernameRef = ref(db, "usernames/" + usernameKey);
+
+      const result = await runTransaction(
+        usernameRef,
+        currentValue => {
+          if (currentValue === null || currentValue === uid) {
+            return uid;
+          }
+
+          return; // Abort if someone else already owns this username
+        }
+      );
+
+      if (!result.committed || result.snapshot.val() !== uid) {
+        throw new Error(
+          "That username is already taken. Please choose another."
+        );
+      }
+
+      return usernameKey;
+    }
+
+    async function createOrOpenProfile(user) {
+      const profileRef = ref(db, "users/" + user.uid);
+      const snapshot = await get(profileRef);
+      const profile = snapshot.val() || {};
+
+      // Existing profile
+      if (profile.username) {
+        sessionStorage.setItem("jeeUserUid", user.uid);
+        window.location.href = "chat.html";
+        return;
+      }
+
+      const suggested = (user.displayName || "")
+        .trim()
+        .replace(/[^A-Za-z0-9_]/g, "")
+        .slice(0, 20);
+
+      // Allow the user to retry if the username is taken
+      while (true) {
+        let username;
+
+        try {
+          username = askForUsername(suggested);
+        } catch (error) {
+          alert(error.message);
+          continue;
+        }
+
+        if (username === null) {
+          message.textContent =
+            "Username setup cancelled. Enter the access password to try again.";
+          return;
+        }
+
+        try {
+          const usernameKey = await reserveUniqueUsername(
+            username,
+            user.uid
+          );
+
+          await set(profileRef, {
+            uid: user.uid,
+            username: usernameKey,
+            email: user.email || "",
+            createdAt: profile.createdAt || Date.now()
+          });
+
+          sessionStorage.setItem("jeeUserUid", user.uid);
+
+          message.style.color = "#22a06b";
+          message.textContent = "Username saved! Opening chat...";
+
+          window.location.href = "chat.html";
+          return;
+
+        } catch (error) {
+          if (
+            error.message &&
+            error.message.includes("already taken")
+          ) {
+            alert(error.message);
+            continue;
+          }
+
+          throw error;
+        }
+      }
+    }
+
+    async function openPrivateAccess() {
+      let user = await getCurrentUser();
+
+      if (!user) {
+        const result = await signInWithPopup(auth, provider);
+        user = result.user;
+      }
+
+      await createOrOpenProfile(user);
+    }
+
+    // Password form
+    unlockForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const password = passwordInput.value.trim();
+
+      message.style.color = "#d94b4b";
+      message.textContent = "";
+
+      // Study page access
+      if (password === "jee123") {
+        window.location.href = "study.html";
+        return;
+      }
+
+      // Chat access
+      if (password !== "aaryaxyz") {
+        message.textContent = "Incorrect password. Try again.";
+        return;
+      }
+
+      unlockButton.disabled = true;
+      message.textContent = "Connecting to Google...";
+
+      try {
+        await openPrivateAccess();
+
+      } catch (error) {
+        console.error("Sign-in/profile error:", error);
+
+        if (error.code === "auth/popup-closed-by-user") {
+          message.textContent = "Google sign-in was cancelled.";
+
+        } else if (error.code === "auth/unauthorized-domain") {
+          message.textContent =
+            "Add your website domain in Firebase Authorized Domains.";
+
+        } else if (
+          error.code === "PERMISSION_DENIED" ||
+          error.code === "database/permission-denied"
+        ) {
+          message.textContent =
+            "Database access denied. Firebase Rules need to be configured.";
+
+        } else {
+          message.textContent =
+            "Login failed: " + (error.message || error.code || "Unknown error");
+        }
+
+      } finally {
+        unlockButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
